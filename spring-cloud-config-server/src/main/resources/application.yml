@@ -1,0 +1,30 @@
+server:
+  port: 8001
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+         uri: http://dev.haoyicn.cn/git/learn/learn_parent.git     # 配置git仓库的地址 
+         # git仓库地址下的相对地址，可以配置多个，用,分割。
+         search-paths: springCloud-demo/config-repo,springCloud-demo/config-repo/fund-center,springCloud-demo/config-repo/registration-center,springCloud-demo/config-repo/user-center,springCloud-demo/config-repo/zuul
+         username: zhaoc                                           # git仓库的账号
+         password: a                                               # git仓库的密码
+  rabbitmq:
+    host: 172.16.1.73
+    port: 5672
+    username: root
+    password: haoyi123
+    virtual-host: /
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/   ## 注册中心eurka地址
+
+management:
+  security:
+    enabled: false
+
