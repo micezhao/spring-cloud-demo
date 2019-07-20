@@ -1,5 +1,9 @@
 package com.mock.fallback;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
@@ -11,13 +15,9 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 @Component
 public class RemoteFallback implements FallbackProvider {
-    private final Logger logger = LoggerFactory.getLogger(FallbackProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(RemoteFallback.class);
 
     //指定要处理的 service。
     @Override
@@ -64,12 +64,13 @@ public class RemoteFallback implements FallbackProvider {
         };
     }
 
-    @Override
-    public ClientHttpResponse fallbackResponse(Throwable cause) {
-        if (cause != null && cause.getCause() != null) {
+	@Override
+	public ClientHttpResponse fallbackResponse(Throwable cause) {
+		if (cause != null && cause.getCause() != null) {
             String reason = cause.getCause().getMessage();
             logger.info("Excption {}",reason);
         }
         return fallbackResponse();
-    }
+	}
+
 }

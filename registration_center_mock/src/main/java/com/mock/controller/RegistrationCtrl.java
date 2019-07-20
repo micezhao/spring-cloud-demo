@@ -31,7 +31,7 @@ public class RegistrationCtrl {
     @Autowired
     MockProcessCenterRemote mockRemote;
     
-	@Value("${registration.init.info}")
+    @Value("${registration.init.info}")
 	private String appName;
     
     // 模拟锁号操作 scheduleId = 999999999 成功，其他失败

@@ -2,7 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-		<parent>
+	
+	<parent>
 		<groupId>com.hy</groupId>
 		<artifactId>springCloud-demo</artifactId>
 		<version>1.0.0.BUILD-SNAPSHOT</version>
@@ -55,6 +56,19 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Dalston.SR1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+	
+	
 	<artifactId>user_center_mock</artifactId>
 </project>

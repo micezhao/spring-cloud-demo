@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8762
 spring:
   application:
     name: config-server
@@ -7,22 +7,22 @@ spring:
     config:
       server:
         git:
-         uri: git@github.com:micezhao/spring-cloud-demo.git    # 配置git仓库的地址 
+         uri: https://github.com/micezhao/spring-cloud-demo.git    # 配置git仓库的地址 
          # git仓库地址下的相对地址，可以配置多个，用,分割。
-         search-paths: spring-cloud-demo/config-repo,spring-cloud-demo/config-repo/fund-center,spring-cloud-demo/config-repo/registration-center,spring-cloud-demo/config-repo/user-center,spring-cloud-demo/config-repo/zuul
+         search-paths: config-repo,config-repo/fund-center,config-repo/registration-center,config-repo/user-center,config-repo/zuul
          username: micezhao                                           # git仓库的账号
-         password: Zc881017                                           # git仓库的密码
+         password: micezhao1017                                       # git仓库的密码
   rabbitmq:
-    host: 172.16.1.73
+    host: 118.190.53.214
     port: 5672
-    username: root
-    password: haoyi123
+    username: micezhao
+    password: Zc881017
     virtual-host: /
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/   ## 注册中心eurka地址
+      defaultZone: http://118.190.53.214:8761/eureka/   ## 注册中心eurka地址
 
 management:
   security:

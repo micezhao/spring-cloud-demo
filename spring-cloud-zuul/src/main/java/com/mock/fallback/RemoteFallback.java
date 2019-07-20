@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 @Component
 public class RemoteFallback implements FallbackProvider {
-    private final Logger logger = LoggerFactory.getLogger(FallbackProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(RemoteFallback.class);
 
     //指定要处理的 service。
     @Override
