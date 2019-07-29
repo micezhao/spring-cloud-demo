@@ -16,6 +16,7 @@
 		<module>registration_center_mock</module>
 		<module>registration_center_mock_mobile</module>
 		<module>user_center_mock</module>
+		<module>security_mock</module>
 		<module>spring-cloud-config-server</module>
 	</modules>
 
