@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 public class UserCtrl{
     private final Logger logger = LoggerFactory.getLogger(UserCtrl.class);
     
-    @Value("${usercenter.init.info}")
+//    @Value("${usercenter.init.info}")
 	private String appName;
     
     
@@ -70,7 +70,7 @@ public class UserCtrl{
     
     @RequestMapping(value = "/getAppInfo")
     public String getAppName(){
-		return appName;
+		return "THIS IS USER_CENTER_APP";
     }
     
 }
