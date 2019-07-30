@@ -22,9 +22,6 @@ public class MyUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		 logger.info("用户的用户名: {}", username);
-//		 PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//	     String password = passwordEncoder.encode("123456");
-//	     logger.info("password: {}", password);
 	     // 参数分别是：用户名，密码，用户权限
 	     User user = new User(username, passwordEncoder.encode("123456"), AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
 	     return user;
