@@ -27,6 +27,7 @@ public class WebSecuritiyConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
+
 		logger.debug("启用自定义安全配置");
         http.
         	authorizeRequests()
@@ -35,9 +36,9 @@ public class WebSecuritiyConfig extends WebSecurityConfigurerAdapter {
         		.anyRequest()
         		.authenticated()
         	.and()
-        	.httpBasic();
-//        	.formLogin().
-//        		loginPage("/login");
+//        	.httpBasic();
+        	.formLogin().
+        		loginPage("/login");
     }
 
 }
