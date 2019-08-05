@@ -34,6 +34,7 @@ public class BroserSecurityCtrl {
 	//请求的信息都缓存在HttpSessionRequestCache类中
 	private RequestCache cache = new HttpSessionRequestCache();
 	
+	//跳转策略类
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 	
 	@Autowired

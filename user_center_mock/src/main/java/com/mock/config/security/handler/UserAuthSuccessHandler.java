@@ -50,8 +50,6 @@ public class UserAuthSuccessHandler extends SavedRequestAwareAuthenticationSucce
 		}else {
 			super.onAuthenticationSuccess(request, response, authentication);
 		}
-		
-		
 	}
 
 }

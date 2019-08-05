@@ -22,7 +22,10 @@ import com.mock.properties.SecurityProperties;
 
 @Component
 //public class UserAuthFailureHandler implements AuthenticationFailureHandler {
-//SimpleUrlAuthenticationFailureHandler 类 是基于请求本身的一个登录失败处理类，使用此类认证失败的请求将原路返回，如果是来自html的请求，将返回页面，如果是json，就提供json响应
+/**
+ * SimpleUrlAuthenticationFailureHandler类 是基于请求本身的一个登录失败处理类，使用此类认证失败的请求将原路返回，
+ * 如果是来自html的请求，将返回页面，如果是json，就提供json响应
+ */
 public class UserAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler{
 	private static final Logger logger=  LoggerFactory.getLogger(AuthenticationFailureHandler.class);
 	
@@ -44,9 +47,7 @@ public class UserAuthFailureHandler extends SimpleUrlAuthenticationFailureHandle
 			response.getWriter().write(objectMapper.writeValueAsString(exception));
 		}else {
 			super.onAuthenticationFailure(request, response, exception);
-		}
-		
-		
+		}	
 	}
 
 }
