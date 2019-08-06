@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.mock.config.security.filter.BeforeAuthFilter;
 import com.mock.config.security.handler.UserAuthFailureHandler;
 import com.mock.config.security.handler.UserAuthSuccessHandler;
 import com.mock.properties.SecurityProperties;
@@ -33,6 +35,9 @@ public class WebSecuritiyConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 	
+	@Autowired
+	public BeforeAuthFilter beforeAuthFilter;
+	
 	/**
 	 * 自定义表单登录 的配置
 	 */
@@ -55,13 +60,16 @@ public class WebSecuritiyConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		logger.debug("同时处理表单登录和rest请求登录");
 		//通过securityProperties.getBrowser().getLoginPage()获取到的登录页面，也是不需要进行认证的
-		http.authorizeRequests().antMatchers("/resources/**", "/auth/require", "/about",securityProperties.getBrowser().getLoginPage()).permitAll()
-			.anyRequest().authenticated()
+		http.
+			authorizeRequests()
+				.antMatchers("/resources/**", "/auth/require", "/about",securityProperties.getBrowser().getLoginPage()).permitAll()
+				.anyRequest().authenticated()
 			.and()
+			.addFilterBefore(beforeAuthFilter, UsernamePasswordAuthenticationFilter.class)
 			.formLogin()
-				.loginPage("/auth/require")
+				.loginPage("/login.html")
+				.loginProcessingUrl("/auth/require")
 				.successHandler(userAuthSuccessHandler) //自定义的登录成功的处理器
 				.failureHandler(userAuthFailureHandler); //自定义的登录失败的处理器
 	}
-
 }
