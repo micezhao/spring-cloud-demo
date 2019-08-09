@@ -62,7 +62,7 @@ public class WebSecuritiyConfig extends WebSecurityConfigurerAdapter {
 		//通过securityProperties.getBrowser().getLoginPage()获取到的登录页面，也是不需要进行认证的
 		http.
 			authorizeRequests()
-				.antMatchers("/resources/**", "/auth/require", "/about",securityProperties.getBrowser().getLoginPage()).permitAll()
+				.antMatchers("/resources/**", "/auth/*", "/about",securityProperties.getBrowser().getLoginPage()).permitAll()
 				.anyRequest().authenticated()
 			.and()
 			.addFilterBefore(beforeAuthFilter, UsernamePasswordAuthenticationFilter.class)

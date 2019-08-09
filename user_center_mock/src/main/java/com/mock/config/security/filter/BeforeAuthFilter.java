@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class BeforeAuthFilter extends OncePerRequestFilter {
 	public static final Logger logger = LoggerFactory.getLogger(BeforeAuthFilter.class);
 	
 	@Autowired
-	private UserAuthFailureHandler  failureHandler;
+	private UserAuthFailureHandler  failureHandler; 
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -37,7 +38,9 @@ public class BeforeAuthFilter extends OncePerRequestFilter {
 				return;
 			}
 		}
+		
 		filterChain.doFilter(request, response);
 	}
+	
 
 }

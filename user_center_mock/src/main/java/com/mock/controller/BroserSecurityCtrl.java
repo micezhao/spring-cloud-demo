@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mock.config.security.handler.VaildataProccessHolder;
 import com.mock.properties.SecurityProperties;
 import com.mock.response.Rtn;
-import com.netflix.discovery.converters.Auto;
 
 /**
  * @author zhaochen
@@ -30,6 +30,7 @@ import com.netflix.discovery.converters.Auto;
  */
 @RestController
 public class BroserSecurityCtrl {
+	
 	
 	//请求的信息都缓存在HttpSessionRequestCache类中
 	private RequestCache cache = new HttpSessionRequestCache();
@@ -39,6 +40,9 @@ public class BroserSecurityCtrl {
 	
 	@Autowired
 	private SecurityProperties securityProperties ;
+	
+	@Autowired
+	private VaildataProccessHolder vaildataProccessHolder ;
 	
 	/**
 	 * 认证请求处理
@@ -61,5 +65,24 @@ public class BroserSecurityCtrl {
 
 		return new Rtn("用户请求未授权，请引到至登录页面");
 	}
-
+	
+	
+	@GetMapping("/auth/vaildataCode")
+	public String vaildataCode(HttpServletRequest request,HttpServletResponse response) {
+		String type = request.getParameter("type");
+		return vaildataProccessHolder.findVaildataHandler(type).creatCode();
+	}
+	
+	@GetMapping("/auht/checkCode")
+	public String checkCode(HttpServletRequest request,HttpServletResponse response) {
+		response.setCharacterEncoding("UTF-8");
+		String code = request.getParameter("code");
+		String type = request.getParameter("type");
+		boolean flag=vaildataProccessHolder.findVaildataHandler(type).vaildata(code);
+		if(flag) {
+			return "验证通过";
+		}else {
+			return "验证失败";	
+		}
+	}
 }
