@@ -2,16 +2,21 @@ package com.mock.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
+import com.mock.mq.Producer;
 
 @RestController
 @RequestMapping("mockProcess")
 public class ProcessCtrl {
 	
 	private final Logger logger = LoggerFactory.getLogger(ProcessCtrl.class);
+	
+	@Autowired
+	private Producer producer;
 	
 	@RequestMapping("/doSuccess")
 	public String doSuccess(@RequestParam("hyHospitalId") String hyHospitalId,@RequestParam("scheduleId") String scheduleId,@RequestParam("idCardNo") String idCardNo,@RequestParam("patientName") String patientName ){
@@ -39,4 +44,9 @@ public class ProcessCtrl {
 		return json.toJSONString();
 	}
 	
+	@RequestMapping("/send")
+	public String sendMsg() {
+		producer.sender("fund_center message send successed");
+		return "200";
+	}
 }

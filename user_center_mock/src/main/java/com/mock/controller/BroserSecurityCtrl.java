@@ -85,4 +85,35 @@ public class BroserSecurityCtrl {
 			return "验证失败";	
 		}
 	}
+	
+	
+	public static void main(String[] args) {
+		String  link_code = "1_[2,3,4,6,7]_[8,9,10]";
+		String[] arr=link_code.split("_");
+		String root = arr[0];
+		System.out.println("根机构编码："+root);
+		String SuperiorStr = arr[1];
+		String[]  supArr = SuperiorStr.substring(1, SuperiorStr.length()-1).split(",");
+		StringBuffer supCode = new StringBuffer();
+		for (int i = 0; i < supArr.length; i++) {
+			if(i==(supArr.length-1)) {
+				supCode.append(supArr[i]);
+			}else {				
+				supCode.append(supArr[i]+",");
+			}
+		}
+		System.out.println("上级机构数量："+supArr.length+" 上级机构的编码："+supCode.toString());
+		System.out.println("当前机构的层级："+(supArr.length+1));
+		String subordinateStr = arr[2];
+		String[] subArr = subordinateStr.substring(1,subordinateStr.length()-1).split(",");
+		StringBuffer subCode = new StringBuffer();
+		for (int i = 0; i < subArr.length; i++) {
+			if(i==(subArr.length-1)) {
+				subCode.append(subArr[i]);
+			}else {				
+				subCode.append(subArr[i]+",");
+			}
+		}
+		System.out.println("下属机构数量："+subArr.length+ " 下属机构的编码："+subCode.toString());
+	}
 }
