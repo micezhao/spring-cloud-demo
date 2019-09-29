@@ -24,10 +24,9 @@ public class Consumer {
 		Message message = (Message)context;
 		String contex =new String(message.getBody()) ;
 		String desc =(String)message.getMessageProperties().getHeaders().get("desc");
-		logger.info("message recived... {}",contex);
+		logger.info("message recived... {},消息编号：{}",contex,message.getMessageProperties().getCorrelationIdString());
 		if(StringUtils.isNotBlank(desc)) {
 			logger.info("desc recived... {}",desc);
 		}
-		
 	}
 }	

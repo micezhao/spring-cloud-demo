@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Producer implements ConfirmCallback{
+public class Producer implements ConfirmCallback {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Producer.class);
 	
@@ -33,15 +33,16 @@ public class Producer implements ConfirmCallback{
 		return new Queue(QUEUE_NAME);
 	}
 	
-	public Producer (RabbitTemplate rabbitTemplate) {
+	public Producer(RabbitTemplate rabbitTemplate) {
 		rabbitTemplate.setConfirmCallback(this);
 	}
 	
 	public void sender(String text) {
 		MessageProperties messageProperties = new MessageProperties();
 		messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-		// 
 		CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+		messageProperties.setCorrelationIdString(correlationData.getId());
+		// 
 		Message message = new Message(text.getBytes(), messageProperties);
 		rabbitTemplate.convertAndSend(QUEUE_NAME,message,new MessagePostProcessor() {
 			@Override
@@ -54,17 +55,12 @@ public class Producer implements ConfirmCallback{
 
 	@Override
 	public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-		rabbitTemplate.setConfirmCallback( new ConfirmCallback() {
-			@Override
-			public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-				String id = correlationData != null ? correlationData.getId() : "";
-			    if (ack) {
-			    	logger.info("消息确认成功, id:{}", id);
-			    } else {
-			    	logger.error("消息未成功投递, id:{}, cause:{}", id, cause);
-			    }
-				
-			}
-		} );
+		String id = correlationData != null ? correlationData.getId() : "";
+	    if (ack) {
+	    	logger.info("消息投递成功, id:{}", id);
+	    } else {
+	    	logger.error("消息未成功投递, id:{}, cause:{}", id, cause);
+	    }
 	}
+	
 }
