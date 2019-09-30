@@ -10,15 +10,19 @@ import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ConfirmCallback;
+import org.springframework.amqp.rabbit.core.RabbitTemplate.ReturnCallback;
 import org.springframework.amqp.rabbit.support.CorrelationData;
+import org.springframework.amqp.rabbit.transaction.RabbitTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class Producer implements ConfirmCallback {
+public class Producer implements ConfirmCallback,ReturnCallback{
 	
 	private static final Logger logger = LoggerFactory.getLogger(Producer.class);
 	
@@ -34,9 +38,17 @@ public class Producer implements ConfirmCallback {
 	}
 	
 	public Producer(RabbitTemplate rabbitTemplate) {
-		rabbitTemplate.setConfirmCallback(this);
+//		rabbitTemplate.setConfirmCallback(this); //设置消息投递到中间件成功的回调
+//		rabbitTemplate.setReturnCallback(this); //设置消息投递到交换机是成功的回调
+		rabbitTemplate.setChannelTransacted(true);
 	}
 	
+	@Bean
+	public RabbitTransactionManager rabbitTransactionManager(CachingConnectionFactory connectionFactory) {
+	    return new RabbitTransactionManager(connectionFactory);
+	}
+
+	@Transactional
 	public void sender(String text) {
 		MessageProperties messageProperties = new MessageProperties();
 		messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
@@ -51,6 +63,8 @@ public class Producer implements ConfirmCallback {
 				return message;
 			}
 		},correlationData);
+		
+		throw new RuntimeException("消息发送方法出现异常");
 	}
 
 	@Override
@@ -61,6 +75,11 @@ public class Producer implements ConfirmCallback {
 	    } else {
 	    	logger.error("消息未成功投递, id:{}, cause:{}", id, cause);
 	    }
+	}
+
+	@Override
+	public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+		logger.info("消息发送失败", message.toString());
 	}
 	
 }
