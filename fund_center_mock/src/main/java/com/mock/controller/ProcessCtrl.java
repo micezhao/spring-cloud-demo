@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.mock.mq.Producer;
+import com.mock.mq.PublishException;
 
 @RestController
 @RequestMapping("mockProcess")

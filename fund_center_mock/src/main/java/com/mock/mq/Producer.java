@@ -10,16 +10,13 @@ import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ConfirmCallback;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ReturnCallback;
 import org.springframework.amqp.rabbit.support.CorrelationData;
-import org.springframework.amqp.rabbit.transaction.RabbitTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class Producer implements ConfirmCallback,ReturnCallback{
@@ -38,24 +35,25 @@ public class Producer implements ConfirmCallback,ReturnCallback{
 	}
 	
 	public Producer(RabbitTemplate rabbitTemplate) {
-//		rabbitTemplate.setConfirmCallback(this); //设置消息投递到中间件成功的回调
-//		rabbitTemplate.setReturnCallback(this); //设置消息投递到交换机是成功的回调
-		rabbitTemplate.setChannelTransacted(true);
+		rabbitTemplate.setConfirmCallback(this); //设置消息投递到中间件成功的回调
+		rabbitTemplate.setReturnCallback(this);  //设置消息投递到交换机是成功的回调
+		rabbitTemplate.setMandatory(true);       //开启强制模式
+//		rabbitTemplate.setChannelTransacted(true);
 	}
 	
-	@Bean
-	public RabbitTransactionManager rabbitTransactionManager(CachingConnectionFactory connectionFactory) {
-	    return new RabbitTransactionManager(connectionFactory);
-	}
+//	@Bean
+//	public RabbitTransactionManager rabbitTransactionManager(CachingConnectionFactory connectionFactory) {
+//	    return new RabbitTransactionManager(connectionFactory);
+//	}
 
-	@Transactional
-	public void sender(String text) {
+	public void sender(String text)  {
 		MessageProperties messageProperties = new MessageProperties();
 		messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
 		CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
 		messageProperties.setCorrelationIdString(correlationData.getId());
-		// 
+		
 		Message message = new Message(text.getBytes(), messageProperties);
+		
 		rabbitTemplate.convertAndSend(QUEUE_NAME,message,new MessagePostProcessor() {
 			@Override
 			public Message postProcessMessage(Message message) throws AmqpException {
@@ -63,8 +61,9 @@ public class Producer implements ConfirmCallback,ReturnCallback{
 				return message;
 			}
 		},correlationData);
+		//消息发送之后，就将这条消息缓存到系统中
+		setCache(message,correlationData.getId());
 		
-		throw new RuntimeException("消息发送方法出现异常");
 	}
 
 	@Override
@@ -72,10 +71,25 @@ public class Producer implements ConfirmCallback,ReturnCallback{
 		String id = correlationData != null ? correlationData.getId() : "";
 	    if (ack) {
 	    	logger.info("消息投递成功, id:{}", id);
+	    	cleanCache(id);
 	    } else {
 	    	logger.error("消息未成功投递, id:{}, cause:{}", id, cause);
+	    	reSend(id);
 	    }
 	}
+	
+	//缓存消息
+	public void setCache(Object obj,String correlationDataId) {
+		// 将消息存入redis或者数据库中的具体实现
+	}
+	public void reSend(String correlationDataId) {
+		// 通过correlationDataId拿到需要重发的消息，进行重发操作的实现
+	}
+	//清除发送成功的消息
+	public void cleanCache(String correlationDataId) {
+		//清除消息的实现
+	}
+	
 
 	@Override
 	public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
