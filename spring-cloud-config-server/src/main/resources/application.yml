@@ -7,9 +7,11 @@ spring:
     config:
       server:
         git:
-         uri: https://github.com/micezhao/spring-cloud-demo.git    # 配置git仓库的地址 
+         uri: https://github.com/micezhao/spring-cloud-demo.git    # 配置git仓库的地址
+         #uri: https://github.com/micezhao/fit-eat.git
          # git仓库地址下的相对地址，可以配置多个，用,分割。
          search-paths: config-repo,config-repo/fund-center,config-repo/registration-center,config-repo/user-center,config-repo/zuul
+         #search-paths: config-repo
          username: micezhao                                           # git仓库的账号
          password: micezhao1017                                       # git仓库的密码
   rabbitmq:
